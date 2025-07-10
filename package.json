@@ -16,7 +16,7 @@
     "package-all": "npm run build && electron-builder --win --mac --linux"
   },
   "keywords": ["electron", "react", "code", "fragments"],
-  "author": "Your Name",
+  "author": "Samir NZAMBA",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.22.0",
@@ -52,16 +52,7 @@
       "package.json"
     ],
     "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": ["x64"]
-        },
-        {
-          "target": "portable",
-          "arch": ["x64"]
-        }
-      ],
+      "target": "nsis",
       "requestedExecutionLevel": "asInvoker"
     },
     "nsis": {
@@ -69,8 +60,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Code Wallet",
-      "include": "build/installer.nsh"
+      "shortcutName": "Code Wallet"
     }
   }
 }
