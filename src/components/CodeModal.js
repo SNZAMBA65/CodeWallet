@@ -3,6 +3,7 @@ import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css';
 import 'highlight.js/styles/github-dark.css';
 import { useTheme } from '../services/ThemeContext';
+import Tag from './Tag';
 import './CodeModal.css';
 
 const { ipcRenderer } = window.require ? window.require('electron') : { ipcRenderer: null };
@@ -117,9 +118,7 @@ const CodeModal = ({ fragment, onClose }) => {
           <div className="code-modal-footer">
             <div className="modal-tags">
               {fragment.tags.map((tag, index) => (
-                <span key={index} className="tag">
-                  {tag}
-                </span>
+                <Tag key={index} name={tag} size="small" />
               ))}
             </div>
           </div>

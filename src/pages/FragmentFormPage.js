@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useFragments } from '../services/FragmentsContext';
+import Tag from '../components/Tag';
 import './FragmentFormPage.css';
 
 const FragmentFormPage = ({ fragment, onNavigate }) => {
@@ -344,17 +345,12 @@ You can use Tab for indentation"
           <div className="tags-container">
             <div className="selected-tags">
               {formData.tags.map((tag, index) => (
-                <span key={index} className="tag tag-removable">
-                  {tag}
-                  <button
-                    type="button"
-                    className="tag-remove"
-                    onClick={() => handleRemoveTag(tag)}
-                    title={`Remove ${tag} tag`}
-                  >
-                    ✕
-                  </button>
-                </span>
+                <Tag 
+                  key={index} 
+                  name={tag} 
+                  removable={true}
+                  onRemove={handleRemoveTag}
+                />
               ))}
             </div>
             

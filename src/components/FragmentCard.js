@@ -1,4 +1,6 @@
 import React from 'react';
+import { useFragments } from '../services/FragmentsContext';
+import Tag from './Tag';
 import './FragmentCard.css';
 
 const FragmentCard = ({ fragment, onEdit, onView, onDelete }) => {
@@ -57,9 +59,7 @@ const FragmentCard = ({ fragment, onEdit, onView, onDelete }) => {
       {fragment.tags && fragment.tags.length > 0 && (
         <div className="fragment-tags">
           {fragment.tags.map((tag, index) => (
-            <span key={index} className="tag">
-              {tag}
-            </span>
+            <Tag key={index} name={tag} size="small" />
           ))}
         </div>
       )}

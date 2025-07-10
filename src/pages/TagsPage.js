@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useFragments } from '../services/FragmentsContext';
+import Tag from '../components/Tag';
 import './TagsPage.css';
 
 const TagsPage = ({ onNavigate }) => {
-  const { tags, fragments, removeTag, updateTag, addTag, getFragmentsByTag } = useFragments();
+  const { tags, fragments, removeTag, updateTag, addTag, getFragmentsByTag, updateTagColor, getTagColor } = useFragments();
   const [editingTag, setEditingTag] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [selectedTag, setSelectedTag] = useState(null);
@@ -11,6 +12,8 @@ const TagsPage = ({ onNavigate }) => {
   const [filteredTags, setFilteredTags] = useState(tags);
   const [showNewTagModal, setShowNewTagModal] = useState(false);
   const [newTagValue, setNewTagValue] = useState('');
+  const [selectedColor, setSelectedColor] = useState('#9a48d0');
+  const [editingColorTag, setEditingColorTag] = useState(null);
 
   // Update filtered tags when tags or search term changes
   useEffect(() => {
@@ -43,6 +46,7 @@ const TagsPage = ({ onNavigate }) => {
         setEditingTag(null);
         setSearchTerm('');
         setShowNewTagModal(false);
+        setEditingColorTag(null);
       }
     };
 
@@ -53,19 +57,39 @@ const TagsPage = ({ onNavigate }) => {
   const handleCreateNewTag = () => {
     setShowNewTagModal(true);
     setNewTagValue('');
+    setSelectedColor('#9a48d0');
   };
 
   const handleSaveNewTag = () => {
     if (newTagValue.trim() && !tags.includes(newTagValue.trim())) {
-      addTag(newTagValue.trim());
+      addTag(newTagValue.trim(), selectedColor);
       setShowNewTagModal(false);
       setNewTagValue('');
+      setSelectedColor('#9a48d0');
     }
   };
 
   const handleCancelNewTag = () => {
     setShowNewTagModal(false);
     setNewTagValue('');
+    setSelectedColor('#9a48d0');
+  };
+
+  const handleEditColor = (tag) => {
+    setEditingColorTag(tag);
+    setSelectedColor(getTagColor(tag));
+  };
+
+  const handleSaveColor = () => {
+    if (editingColorTag) {
+      updateTagColor(editingColorTag, selectedColor);
+      setEditingColorTag(null);
+    }
+  };
+
+  const handleCancelColor = () => {
+    setEditingColorTag(null);
+    setSelectedColor('#9a48d0');
   };
 
   const getTagUsageCount = (tagName) => {
@@ -258,13 +282,23 @@ const TagsPage = ({ onNavigate }) => {
                       ) : (
                         <>
                           <div className="tag-content">
-                            <span className="tag tag-large">{tag}</span>
+                            <Tag name={tag} size="large" />
                             <span className="tag-usage">
                               {usageCount} fragment{usageCount !== 1 ? 's' : ''}
                             </span>
                           </div>
                           
                           <div className="tag-actions">
+                            <button
+                              className="action-btn color-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditColor(tag);
+                              }}
+                              title="Change color"
+                            >
+                              🎨
+                            </button>
                             <button
                               className="action-btn edit-btn"
                               onClick={(e) => {
@@ -328,9 +362,7 @@ const TagsPage = ({ onNavigate }) => {
                           </div>
                           <div className="fragment-tags">
                             {fragment.tags.map((tag, index) => (
-                              <span key={index} className="tag tag-small">
-                                {tag}
-                              </span>
+                              <Tag key={index} name={tag} size="small" />
                             ))}
                           </div>
                         </div>
@@ -384,6 +416,27 @@ const TagsPage = ({ onNavigate }) => {
                   This tag already exists
                 </div>
               )}
+              
+              <label className="form-label" style={{ marginTop: '1rem' }}>
+                Color
+              </label>
+              <div className="color-input-section">
+                <input
+                  type="color"
+                  className="color-input"
+                  value={selectedColor}
+                  onChange={(e) => setSelectedColor(e.target.value)}
+                  title="Choose color"
+                />
+                <div className="color-info">
+                  <span className="color-value">{selectedColor.toUpperCase()}</span>
+                </div>
+              </div>
+              
+              <div className="color-preview">
+                <span className="form-label">Preview:</span>
+                <Tag name={newTagValue || 'Tag preview'} style={{ backgroundColor: selectedColor }} />
+              </div>
             </div>
             <div className="modal-footer">
               <button
@@ -398,6 +451,60 @@ const TagsPage = ({ onNavigate }) => {
                 disabled={!newTagValue.trim() || tags.includes(newTagValue.trim())}
               >
                 Create Tag
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Color Edit Modal */}
+      {editingColorTag && (
+        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && handleCancelColor()}>
+          <div className="modal-content color-modal">
+            <div className="modal-header">
+              <h3>Change Color for "{editingColorTag}"</h3>
+              <button
+                className="btn btn-ghost close-btn"
+                onClick={handleCancelColor}
+                title="Close (Esc)"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="modal-body">
+              <label className="form-label">
+                Choose Color
+              </label>
+              <div className="color-input-section">
+                <input
+                  type="color"
+                  className="color-input"
+                  value={selectedColor}
+                  onChange={(e) => setSelectedColor(e.target.value)}
+                  title="Choose color"
+                />
+                <div className="color-info">
+                  <span className="color-value">{selectedColor.toUpperCase()}</span>
+                </div>
+              </div>
+              
+              <div className="color-preview">
+                <span className="form-label">Preview:</span>
+                <Tag name={editingColorTag} style={{ backgroundColor: selectedColor }} />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                className="btn btn-ghost"
+                onClick={handleCancelColor}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={handleSaveColor}
+              >
+                Save Color
               </button>
             </div>
           </div>

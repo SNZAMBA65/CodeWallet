@@ -153,6 +153,7 @@
   background-color: var(--accent-color);
   border-radius: var(--radius-sm);
   gap: var(--spacing-xs);
+  transition: all 0.2s ease;
 }
 
 .tag-removable {
@@ -160,7 +161,8 @@
 }
 
 .tag-removable:hover {
-  background-color: var(--color-purple);
+  opacity: 0.8;
+  transform: scale(1.05);
 }
 
 /* Modal styles */
